@@ -1,0 +1,21 @@
+.DS_Store
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Agents app secrets & local env
+agents/.env
+agents/env
+
+# Python
+agents/.venv/
+
+# Node
+agents/web/node_modules/
+
+# Local data
+agents/data/
+agents/checkpoints.db
+*.db
