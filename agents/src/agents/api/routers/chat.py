@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Request
 from langchain_core.messages import HumanMessage
@@ -12,7 +11,7 @@ from pydantic import BaseModel, Field
 from agents.graphs.daily import GraphKind, get_graph
 from agents.limiter import limiter
 from agents.logging_setup import get_logger, log_payload
-from agents.settings import Settings, get_settings
+from agents.settings import get_settings
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 logger = get_logger("agents.chat")
