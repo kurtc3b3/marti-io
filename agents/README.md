@@ -2,13 +2,13 @@
 
 Multi-agent personal assistant API built with **FastAPI**, **LangGraph**, **PostgreSQL** (thread memory), **Redis** (WebSocket pub/sub), and a **TypeScript** web UI.
 
-Planned integrations: news, weather, vocabulary, markets, GitHub, RAG, SQLite, email triage, Mastodon, X, Discord, Slack, MCP tools, and A2A agent communication.
+Integrations: **news** (NewsAPI / Google News RSS), **weather** (wttr.in), **vocabulary** (Merriam-Webster word of the day), **GitHub trending**, and more planned — markets, RAG, SQLite, email triage, Mastodon, X, Discord, Slack, MCP tools, and A2A agent communication.
 
 ## Quick start (Docker)
 
 ```bash
 cd agents
-cp .env.template .env   # set OPENAI_API_KEY
+cp .env.template .env   # set OPENAI_API_KEY (optional: NEWS_API_KEY)
 docker compose up --build
 ```
 

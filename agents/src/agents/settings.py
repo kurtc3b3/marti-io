@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None, validation_alias="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4o-mini", validation_alias="OPENAI_MODEL")
 
+    news_api_key: str | None = Field(default=None, validation_alias="NEWS_API_KEY")
+
     database_url: str = Field(
         default="postgresql://postgres:postgres@localhost:5432/agents",
         validation_alias="DATABASE_URL",

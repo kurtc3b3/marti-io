@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import json
 from typing import Annotated, Literal, TypedDict
-from urllib.parse import quote
-from urllib.request import urlopen
 
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
@@ -15,33 +12,30 @@ from langgraph.graph.message import add_messages
 from langgraph.types import Send
 from langchain_core.tools import tool
 
-from agents.settings import Settings
+from agents.integrations.dictionary import fetch_word_of_the_day
+from agents.integrations.github import fetch_github_trending
+from agents.integrations.news import fetch_news_headlines
+from agents.integrations.weather import fetch_weather, format_weather
+from agents.settings import Settings, get_settings
 
 
 @tool
 def get_weather(city: str) -> str:
     """Get current weather for a city."""
-    url = f"https://wttr.in/{quote(city)}?format=j1"
-    with urlopen(url, timeout=10) as response:
-        data = json.load(response)
-    current = data["current_condition"][0]
-    description = current["weatherDesc"][0]["value"]
-    return f"{city}: {current['temp_C']}°C ({current['temp_F']}°F), {description}"
+    return format_weather(fetch_weather(city))
 
 
 @tool
 def search_news(topic: str) -> str:
-    """Search recent news for a topic (mock — wire to news API later)."""
-    return f"Recent headlines about {topic}: [mock] markets steady, policy updates expected."
+    """Search recent news for a topic."""
+    settings = get_settings()
+    return fetch_news_headlines(topic, api_key=settings.news_api_key)
 
 
 @tool
 def word_of_the_day() -> str:
     """Recommend an English word with definition and example usage."""
-    return (
-        "Serendipity (noun): finding something good without looking for it. "
-        "Example: Meeting her cofounder at the conference was pure serendipity."
-    )
+    return fetch_word_of_the_day()
 
 
 @tool
@@ -54,9 +48,8 @@ def query_sqlite(sql: str) -> str:
 
 @tool
 def github_trending(language: str = "") -> str:
-    """List trending GitHub repositories (mock)."""
-    suffix = f" for {language}" if language else ""
-    return f"Trending repos{suffix}: langgraph, fastapi, uv (mock data)."
+    """List trending GitHub repositories, optionally filtered by language."""
+    return fetch_github_trending(language)
 
 
 TOOLS = [get_weather, search_news, word_of_the_day, query_sqlite, github_trending]

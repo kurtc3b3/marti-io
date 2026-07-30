@@ -27,10 +27,18 @@ AGENT_CATALOG = [
 
 PLATFORM_INTEGRATIONS = [
     {"id": "weather", "status": "tool", "notes": "wttr.in via get_weather"},
-    {"id": "news", "status": "mock", "notes": "Wire to news API / MCP"},
-    {"id": "dictionary", "status": "mock", "notes": "Word of the day stub"},
+    {"id": "news", "status": "tool", "notes": "NewsAPI.org or Google News RSS via search_news"},
+    {
+        "id": "dictionary",
+        "status": "tool",
+        "notes": "Merriam-Webster WOTD via wordoftheday.freeapi.me",
+    },
     {"id": "markets", "status": "planned", "notes": "Market data feed"},
-    {"id": "github", "status": "mock", "notes": "Trending repos stub"},
+    {
+        "id": "github",
+        "status": "tool",
+        "notes": "GitHub trending via githubtrending.lessx.xyz",
+    },
     {"id": "rag", "status": "planned", "notes": "Local document retrieval"},
     {"id": "sqlite", "status": "planned", "notes": "Read-only DB queries"},
     {"id": "email", "status": "planned", "notes": "Triage classifier"},
