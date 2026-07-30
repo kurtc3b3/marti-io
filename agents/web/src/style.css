@@ -11,6 +11,7 @@
   --accent-soft: #dbeafe;
   --user-bg: #eff6ff;
   --assistant-bg: #f4f4f5;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +25,7 @@
     --accent-soft: #1e3a5f;
     --user-bg: #172554;
     --assistant-bg: #27272a;
+    --shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
   }
 }
 
@@ -38,7 +40,7 @@ body {
 }
 
 .layout {
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
 }
@@ -47,8 +49,148 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.header-main {
+  min-width: 0;
+}
+
+.header-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.header-widgets {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  max-width: 100%;
+}
+
+.word-widget,
+.weather-widget {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.word-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1 1 auto;
+  min-width: 480px;
+  max-width: 720px;
+  padding: 0.9rem 1.1rem;
+}
+
+.word-widget.loading,
+.word-widget.error {
+  justify-content: center;
+  min-height: 96px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.word-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.word-body {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.75fr) minmax(0, 1.4fr) minmax(160px, 1fr);
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: start;
+}
+
+.word-primary {
+  padding-right: 1rem;
+  border-right: 1px solid var(--border);
+}
+
+.word-copy {
+  min-width: 0;
+}
+
+.word-source {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.word-label {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.word-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.word-meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.word-definition {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.word-example {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--accent-soft);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.word-etymology {
+  margin: 0.35rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.word-error {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.word-widget.error {
+  border-color: #fca5a5;
+}
+
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 220px;
+  max-width: 280px;
+  padding: 0.85rem 1rem;
 }
 
 .eyebrow {
@@ -61,11 +203,15 @@ body {
 
 .header h1 {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
 }
 
 .muted {
   color: var(--muted);
+}
+
+.tiny {
+  font-size: 0.78rem;
 }
 
 .section {
@@ -74,50 +220,213 @@ body {
 
 .section-head {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .section-head h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+}
+
+.section-sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+}
+
+.weather-widget.loading,
+.weather-widget.error {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.weather-widget.error {
+  border-color: #fca5a5;
+}
+
+.weather-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.weather-copy {
+  min-width: 0;
+}
+
+.weather-city {
+  margin: 0;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.weather-temp {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.weather-desc {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
 }
 
 .dashboard {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.dash-card {
+.dashboard-loading {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.dashboard-block {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1rem;
-  min-height: 8rem;
+  border-radius: 18px;
+  padding: 1rem 1.1rem 1.15rem;
+  box-shadow: var(--shadow);
 }
 
-.dash-card h3 {
-  margin: 0 0 0.5rem;
-  font-size: 0.85rem;
-  color: var(--muted);
+.block-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.85rem;
+}
+
+.block-head h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
-.dash-card p {
-  margin: 0;
-  font-size: 0.95rem;
-  white-space: pre-wrap;
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
-.dash-card-error {
-  border-color: #fca5a5;
+.news-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 128px;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.04), transparent);
+}
+
+.news-meta {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.news-title {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.news-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.news-title a:hover {
+  color: var(--accent);
+}
+
+.repo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.repo-item {
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.repo-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.repo-name {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.repo-name:hover {
+  text-decoration: underline;
+}
+
+.repo-lang {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.repo-stats {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.repo-desc {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+}
+
+.panel-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.9rem;
 }
 
 .chat-section {
   margin-top: 2rem;
+}
+
+.chat-github-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .chat-panel {
@@ -125,6 +434,22 @@ body {
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+
+.github-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.github-scroll {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 520px;
+  padding-right: 0.15rem;
 }
 
 .chat-log {
@@ -241,9 +566,60 @@ button:disabled {
   color: #dc2626;
 }
 
+@media (max-width: 900px) {
+  .header-widgets {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .word-widget,
+  .weather-widget {
+    max-width: none;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .word-body {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .word-primary {
+    padding-right: 0;
+    padding-bottom: 0.75rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chat-github-row {
+    grid-template-columns: 1fr;
+  }
+
+  .github-scroll {
+    max-height: none;
+  }
+
+  .news-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.35rem;
+  }
+
+  .news-card {
+    flex: 0 0 min(220px, 72vw);
+    scroll-snap-align: start;
+  }
+}
+
 @media (max-width: 640px) {
   .header {
     flex-direction: column;
+  }
+
+  .header-side {
+    width: 100%;
+    align-items: stretch;
   }
 
   .chat-input-row {
