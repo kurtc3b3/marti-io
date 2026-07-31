@@ -57,15 +57,38 @@ class Settings(BaseSettings):
         validation_alias="CHECKPOINTER",
     )
 
-    redis_url: str = Field(
-        default="redis://localhost:6379/0",
+    redis_url: str | None = Field(
+        default=None,
         validation_alias="REDIS_URL",
     )
+
+    @field_validator("redis_url", mode="before")
+    @classmethod
+    def empty_redis_url_is_none(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value.strip()
 
     log_level: str = Field(default="INFO", validation_alias="LOG_LEVEL")
     log_format: Literal["text", "json"] = Field(default="text", validation_alias="LOG_FORMAT")
     log_payloads: bool = Field(default=True, validation_alias="LOG_PAYLOADS")
     log_http_payloads: bool = Field(default=True, validation_alias="LOG_HTTP_PAYLOADS")
+
+    # Uvicorn WebSocket keepalive (enabled by default outside development)
+    ws_ping_interval: float | None = Field(
+        default=None,
+        validation_alias="WS_PING_INTERVAL",
+    )
+    ws_ping_timeout: float | None = Field(
+        default=None,
+        validation_alias="WS_PING_TIMEOUT",
+    )
+    timeout_keep_alive: int | None = Field(
+        default=None,
+        validation_alias="TIMEOUT_KEEP_ALIVE",
+    )
 
     static_dir: Path = Field(
         default=PACKAGE_ROOT / "static",
@@ -93,6 +116,46 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"
+
+    @property
+    def redis_enabled(self) -> bool:
+        return self.redis_url is not None
+
+    @property
+    def ws_keepalive_enabled(self) -> bool:
+        return self.app_env != "development"
+
+    @property
+    def effective_ws_ping_interval(self) -> float | None:
+        if self.ws_ping_interval is not None:
+            return self.ws_ping_interval or None
+        return 20.0 if self.ws_keepalive_enabled else None
+
+    @property
+    def effective_ws_ping_timeout(self) -> float | None:
+        if self.ws_ping_timeout is not None:
+            return self.ws_ping_timeout or None
+        return 20.0 if self.ws_keepalive_enabled else None
+
+    @property
+    def effective_timeout_keep_alive(self) -> int | None:
+        if self.timeout_keep_alive is not None:
+            return self.timeout_keep_alive or None
+        return 75 if self.ws_keepalive_enabled else None
+
+    def uvicorn_kwargs(self) -> dict[str, object]:
+        kwargs: dict[str, object] = {
+            "factory": True,
+            "host": self.api_host,
+            "port": self.api_port,
+            "reload": self.api_reload,
+        }
+        if self.effective_ws_ping_interval is not None:
+            kwargs["ws_ping_interval"] = self.effective_ws_ping_interval
+            kwargs["ws_ping_timeout"] = self.effective_ws_ping_timeout
+        if self.effective_timeout_keep_alive is not None:
+            kwargs["timeout_keep_alive"] = self.effective_timeout_keep_alive
+        return kwargs
 
 
 @lru_cache

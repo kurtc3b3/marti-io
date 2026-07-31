@@ -50,6 +50,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         init_checkpointer(settings)
         redis = await init_redis(settings)
         init_ws_manager(redis)
+        log_payload(
+            logger,
+            "ws.backend",
+            {"mode": "redis" if redis is not None else "local"},
+        )
         yield
         await shutdown_redis()
         shutdown_checkpointer()

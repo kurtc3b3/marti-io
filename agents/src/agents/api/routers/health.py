@@ -26,7 +26,9 @@ async def readiness(settings: Settings = Depends(get_settings)) -> dict:
 
     redis_ok = await redis_health()
 
-    checks = [redis_ok]
+    checks: list[bool] = []
+    if redis_ok is not None:
+        checks.append(redis_ok)
     if postgres_ok is not None:
         checks.append(postgres_ok)
     status = "ok" if all(checks) else "degraded"
@@ -35,7 +37,8 @@ async def readiness(settings: Settings = Depends(get_settings)) -> dict:
         "status": status,
         "checkpointer": settings.checkpointer,
         "postgres": postgres_ok,
-        "redis": redis_ok,
+        "redis": redis_ok if redis_ok is not None else "disabled",
+        "ws_backend": "redis" if settings.redis_enabled else "local",
     }
 
 
