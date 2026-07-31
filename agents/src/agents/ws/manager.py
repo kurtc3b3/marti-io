@@ -1,4 +1,4 @@
-"""WebSocket connection manager with Redis pub/sub for horizontal scaling."""
+"""WebSocket manager with optional Redis pub/sub for horizontal scaling."""
 
 from __future__ import annotations
 
@@ -8,16 +8,17 @@ from typing import Any
 
 from fastapi import WebSocket
 from redis.asyncio import Redis
+
 from agents.logging_setup import get_logger, log_payload, ws_log_level
 from agents.settings import get_settings
 
-logger = get_logger("agents.ws.redis")
+logger = get_logger("agents.ws")
 
 _manager: ChatWebSocketManager | None = None
 
 
 class ChatWebSocketManager:
-    def __init__(self, redis: Redis) -> None:
+    def __init__(self, redis: Redis | None = None) -> None:
         self.redis = redis
         self._local: dict[str, set[WebSocket]] = {}
         self._listener_tasks: dict[WebSocket, asyncio.Task] = {}
@@ -28,9 +29,10 @@ class ChatWebSocketManager:
     async def connect(self, websocket: WebSocket, thread_id: str) -> None:
         await websocket.accept()
         self._local.setdefault(thread_id, set()).add(websocket)
-        self._listener_tasks[websocket] = asyncio.create_task(
-            self._listen(thread_id, websocket)
-        )
+        if self.redis is not None:
+            self._listener_tasks[websocket] = asyncio.create_task(
+                self._listen(thread_id, websocket)
+            )
 
     async def disconnect(self, websocket: WebSocket, thread_id: str) -> None:
         task = self._listener_tasks.pop(websocket, None)
@@ -57,9 +59,29 @@ class ChatWebSocketManager:
             level=ws_log_level(event_type, settings=settings),
             thread_id=thread_id,
         )
-        await self.redis.publish(self._channel(thread_id), json.dumps(payload))
+        if self.redis is not None:
+            await self.redis.publish(
+                self._channel(thread_id),
+                json.dumps(payload),
+            )
+        else:
+            await self._publish_local(thread_id, payload)
+
+    async def _publish_local(
+        self,
+        thread_id: str,
+        payload: dict[str, Any],
+    ) -> None:
+        for websocket in list(self._local.get(thread_id, ())):
+            try:
+                await websocket.send_json(payload)
+            except Exception:
+                pass
 
     async def _listen(self, thread_id: str, websocket: WebSocket) -> None:
+        if self.redis is None:
+            return
+
         pubsub = self.redis.pubsub()
         await pubsub.subscribe(self._channel(thread_id))
         try:
@@ -77,7 +99,7 @@ class ChatWebSocketManager:
             await pubsub.aclose()
 
 
-def init_ws_manager(redis: Redis) -> ChatWebSocketManager:
+def init_ws_manager(redis: Redis | None = None) -> ChatWebSocketManager:
     global _manager
     _manager = ChatWebSocketManager(redis)
     return _manager

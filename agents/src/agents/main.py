@@ -9,13 +9,7 @@ from agents.settings import get_settings
 
 def run() -> None:
     settings = get_settings()
-    uvicorn.run(
-        "agents.app:create_app",
-        factory=True,
-        host=settings.api_host,
-        port=settings.api_port,
-        reload=settings.api_reload,
-    )
+    uvicorn.run("agents.app:create_app", **settings.uvicorn_kwargs())
 
 
 if __name__ == "__main__":
