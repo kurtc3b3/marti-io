@@ -10,12 +10,18 @@ from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.checkpoint.sqlite import SqliteSaver
 from psycopg import Connection
 from psycopg.rows import dict_row
+from psycopg.sql import SQL, Identifier
 
 from agents.settings import Settings
 
 _checkpointer: Any | None = None
 _pg_conn: Connection | None = None
 _sqlite_conn: sqlite3.Connection | None = None
+
+
+def _prepare_postgres_schema(conn: Connection, schema: str) -> None:
+    conn.execute(SQL("CREATE SCHEMA IF NOT EXISTS {}").format(Identifier(schema)))
+    conn.execute(SQL("SET search_path TO {}, public").format(Identifier(schema)))
 
 
 def init_checkpointer(settings: Settings):
@@ -28,6 +34,9 @@ def init_checkpointer(settings: Settings):
             autocommit=True,
             row_factory=dict_row,
         )
+        schema = settings.effective_database_schema
+        if schema:
+            _prepare_postgres_schema(_pg_conn, schema)
         saver = PostgresSaver(_pg_conn)
         saver.setup()
         _checkpointer = saver

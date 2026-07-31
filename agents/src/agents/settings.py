@@ -48,6 +48,10 @@ class Settings(BaseSettings):
         default="postgresql://postgres:postgres@localhost:5432/agents",
         validation_alias="DATABASE_URL",
     )
+    database_schema: str = Field(
+        default="",
+        validation_alias="DATABASE_SCHEMA",
+    )
     sqlite_path: Path = Field(
         default=PROJECT_ROOT / "data" / "checkpoints.db",
         validation_alias="SQLITE_PATH",
@@ -61,6 +65,13 @@ class Settings(BaseSettings):
         default=None,
         validation_alias="REDIS_URL",
     )
+
+    @field_validator("database_schema", mode="before")
+    @classmethod
+    def normalize_database_schema(cls, value: str | None) -> str:
+        if value is None:
+            return ""
+        return str(value).strip()
 
     @field_validator("redis_url", mode="before")
     @classmethod
@@ -116,6 +127,16 @@ class Settings(BaseSettings):
     @property
     def is_production(self) -> bool:
         return self.app_env == "production"
+
+    @property
+    def effective_database_schema(self) -> str | None:
+        """Postgres schema for LangGraph tables; None uses default public."""
+        name = self.database_schema.strip()
+        if not name or name == "public":
+            return None
+        if self.database_url.lower().startswith("sqlite"):
+            return None
+        return name
 
     @property
     def redis_enabled(self) -> bool:
