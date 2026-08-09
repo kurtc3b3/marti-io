@@ -3,9 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Daily Agent Hub</title>
-    <script type="module" crossorigin src="/assets/index-D_zeRZ1n.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-C3DDk1Sg.css">
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#eef4f8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141a22" media="(prefers-color-scheme: dark)" />
+    <title>Marti — Daily Agent Hub</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("marti_theme");
+          var dark =
+            stored === "dark" ||
+            (stored !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (_) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-C81wheb9.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Cz7KLwL4.css">
   </head>
   <body>
     <div id="app"></div>
