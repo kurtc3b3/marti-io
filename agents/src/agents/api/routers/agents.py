@@ -20,7 +20,7 @@ AGENT_CATALOG = [
     {
         "id": "swarm",
         "pattern": "swarm",
-        "description": "Multi-agent handoffs (see examples/swarm.py)",
+        "description": "Multi-agent handoffs (see agent-toolkit examples/swarm.py)",
         "status": "planned",
     },
 ]

@@ -70,7 +70,7 @@ Server streams via Redis pub/sub:
 - **simple** — ReAct loop with shared tools (weather, news, vocabulary, GitHub, SQLite stub)
 - **map_reduce** — parallel domain workers + synthesize step
 
-See `examples/` for additional patterns: swarm, supervisor, plan-execute, email triage, RAG, etc.
+See [agent-toolkit](https://github.com/ali-cabukel/agent-toolkit) for additional patterns: swarm, supervisor, plan-execute, email triage, RAG, etc.
 
 ## Project layout
 
